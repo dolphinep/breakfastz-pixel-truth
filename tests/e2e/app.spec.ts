@@ -334,6 +334,7 @@ test("footer: by breakfastz + GitHub profile + About dialog", async ({ page }) =
   const about = page.getByRole("dialog", { name: /by breakfastz/ });
   await expect(about).toBeVisible();
   await expect(about.getByRole("link", { name: /YouTube/ })).toHaveAttribute("href", "https://www.youtube.com/@breakfastz");
+  await expect(about.getByRole("link", { name: "GitHub @dolphinep" })).toHaveAttribute("href", "https://github.com/dolphinep");
   await expect(about.getByRole("link", { name: /breakfastz-pixel-truth/ })).toHaveAttribute("href", "https://github.com/dolphinep/breakfastz-pixel-truth");
   await page.screenshot({ path: `${SHOTS}/14-about.png` });
   await page.keyboard.press("Escape");

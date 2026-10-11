@@ -772,6 +772,30 @@ dialog.about h3 {
   background: var(--yolk-light);
 }
 
+.about-icons {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-icons a {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: var(--line);
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink);
+}
+
+.about-icons a:hover {
+  background: var(--yolk);
+}
+
 .about-privacy {
   display: flex;
   align-items: center;

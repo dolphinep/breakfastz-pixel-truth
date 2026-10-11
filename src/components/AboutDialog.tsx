@@ -4,6 +4,13 @@ import { SITE } from "@/config/site";
 import { useI18n } from "@/i18n";
 import { Logo } from "./Logo";
 
+/** Brand logo from simple-icons (CC0). */
+const Brand = ({ path }: { path: string }) => (
+  <svg width={22} height={22} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d={path} />
+  </svg>
+);
+
 /** Who made this: the breakfastz channel, its socials and the source code. */
 export function AboutDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useI18n();
@@ -32,12 +39,11 @@ export function AboutDialog({ open, onClose }: { open: boolean; onClose: () => v
       </div>
       <p>{t("aboutBody")}</p>
       <h3>{t("aboutFollow")}</h3>
-      <ul className="about-links">
-        {SITE.channels.map((c) => (
+      <ul className="about-icons">
+        {[...SITE.channels, { name: "GitHub", handle: `@${SITE.github.user}`, url: SITE.github.profile, icon: SITE.github.icon }].map((c) => (
           <li key={c.name}>
-            <a href={c.url} target="_blank" rel="noreferrer">
-              <b>{c.name}</b> {c.handle}
-              <ExternalLink size={14} aria-hidden />
+            <a href={c.url} target="_blank" rel="noreferrer" aria-label={`${c.name} ${c.handle}`} data-tip={`${c.name} ${c.handle}`}>
+              <Brand path={c.icon.path} />
             </a>
           </li>
         ))}
@@ -47,12 +53,6 @@ export function AboutDialog({ open, onClose }: { open: boolean; onClose: () => v
         <li>
           <a href={SITE.github.repo} target="_blank" rel="noreferrer">
             <b>GitHub</b> {t("aboutRepo")}
-            <ExternalLink size={14} aria-hidden />
-          </a>
-        </li>
-        <li>
-          <a href={SITE.github.profile} target="_blank" rel="noreferrer">
-            <b>GitHub</b> @{SITE.github.user}
             <ExternalLink size={14} aria-hidden />
           </a>
         </li>
