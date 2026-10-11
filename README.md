@@ -3,6 +3,8 @@
 **Turn fake AI "pixel art" into real, grid-aligned pixel art — then bring it to life.**
 Runs entirely in your browser: no server, no uploads, no AI image generation. Just signal processing in TypeScript.
 
+**Try it → [pixeltruth.breakfastz.dev](https://pixeltruth.breakfastz.dev)**
+
 ![Pixel Truth](docs/screenshots/03-fake-egg.png)
 
 By [**breakfastz**](https://www.youtube.com/@breakfastz) — one real product built with AI every week. This is EP.001.
@@ -40,6 +42,11 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build    # static site in dist/
 ```
+
+## Deploy
+
+Deployed on Cloudflare Pages from `main` (build `npm run build`, output `dist/`, Node version from `.node-version`).
+`public/_headers` sets security and cache headers.
 
 ## Scripts
 

@@ -1,6 +1,7 @@
 /** Who made this and where to find them — shown in the footer and the About dialog. */
 export const SITE = {
   brand: "breakfastz",
+  url: "https://pixeltruth.breakfastz.dev",
   episode: "EP.001",
   github: { user: "dolphinep", profile: "https://github.com/dolphinep", repo: "https://github.com/dolphinep/breakfastz-pixel-truth" },
   channels: [
