@@ -29,3 +29,4 @@ tests/.capture/
 # test images downloaded by scripts/fetch-samples.sh (third-party, not redistributed)
 tests/fixtures/samples/
 playwright-report/
+test-results/
