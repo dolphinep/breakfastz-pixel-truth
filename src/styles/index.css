@@ -1,0 +1,1517 @@
+/* Pixel Truth — uses the breakfast channel brand: thick ink outlines + solid shadow offset to the bottom-right */
+:root {
+  --toast: #efeadb;
+  --white: #fffdf5;
+  --yolk: #ffc800;
+  --yolk-light: #ffe36b;
+  --bacon: #e0675e;
+  --ink: #2a0f08;
+  --muted: #7a6a5f;
+  --ok: #3fae7a;
+  --warn: #f2a33a;
+  --bad: #e0475e;
+  --line: 3px solid var(--ink);
+  --shadow: 5px 5px 0 var(--ink);
+  --radius: 16px;
+  color-scheme: light;
+  font-family: "Mitr", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--toast);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--toast) radial-gradient(rgba(255, 200, 0, 0.18) 18%, transparent 20%) 0 0 / 22px 22px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: "Fredoka", "Mitr", sans-serif;
+}
+
+.app {
+  overflow-x: clip;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 16px clamp(16px, 3vw, 32px) 12px;
+  gap: 16px;
+}
+
+.app.drag-over::after {
+  content: attr(data-drop-label);
+  position: fixed;
+  inset: 12px;
+  display: grid;
+  place-items: center;
+  border: 4px dashed var(--ink);
+  border-radius: 24px;
+  background: rgba(255, 200, 0, 0.35);
+  font: 700 32px "Fredoka", "Mitr", sans-serif;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ---------- header */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Logo + name = link back to home */
+.home {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 16px;
+}
+
+.top .logo {
+  width: 84px;
+  height: 84px;
+  flex: none;
+  overflow: visible;
+}
+
+.top .title {
+  min-width: 0;
+}
+
+/* Logo hover: bacon winds up and bonks the head → egg squashes + squints + stars pop */
+.logo-bacon,
+.logo-egg,
+.logo-pow {
+  transform-box: fill-box;
+}
+.logo-bacon {
+  transform-origin: 85% 90%;
+}
+.logo-egg {
+  transform-origin: 50% 100%;
+}
+.logo-pow {
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+.logo-eyes-squint {
+  opacity: 0;
+}
+
+.home:hover .logo-bacon,
+.home:focus-visible .logo-bacon {
+  animation: bacon-bonk 0.75s cubic-bezier(0.3, 0, 0.2, 1);
+}
+.home:hover .logo-egg,
+.home:focus-visible .logo-egg {
+  animation: egg-squash 0.75s ease-out;
+}
+.home:hover .logo-pow,
+.home:focus-visible .logo-pow {
+  animation: pow 0.75s ease-out;
+}
+.home:hover .logo-eyes-open,
+.home:focus-visible .logo-eyes-open {
+  animation: eyes-out 0.75s steps(1) forwards;
+}
+.home:hover .logo-eyes-squint,
+.home:focus-visible .logo-eyes-squint {
+  animation: eyes-in 0.75s steps(1) forwards;
+}
+
+@keyframes bacon-bonk {
+  0% { transform: none; }
+  30% { transform: rotate(55deg) translate(6px, -10px); }
+  44% { transform: rotate(-42deg) translate(-6px, 6px); }
+  58% { transform: rotate(-34deg) translate(-4px, 3px); }
+  100% { transform: none; }
+}
+@keyframes egg-squash {
+  0%, 42% { transform: none; }
+  50% { transform: scale(1.12, 0.8); }
+  64% { transform: scale(0.97, 1.04); }
+  78%, 100% { transform: none; }
+}
+@keyframes pow {
+  0%, 44% { opacity: 0; transform: scale(0.3) rotate(0); }
+  54% { opacity: 1; transform: scale(1.2) rotate(20deg); }
+  80% { opacity: 1; transform: scale(1) rotate(40deg) translate(-4px, -4px); }
+  100% { opacity: 0; transform: scale(0.8) rotate(60deg) translate(-8px, -8px); }
+}
+/* Keep squinting from the bonk until the mouse leaves */
+@keyframes eyes-out {
+  0% { opacity: 1; }
+  46%, 100% { opacity: 0; }
+}
+@keyframes eyes-in {
+  0% { opacity: 0; }
+  46%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home:hover .logo-bacon,
+  .home:hover .logo-egg,
+  .home:hover .logo-pow {
+    animation: none;
+  }
+  .home:hover .logo-eyes-open,
+  .home:hover .logo-eyes-squint {
+    animation-duration: 0.01s;
+  }
+}
+
+.top-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Header buttons all share one height — the language button is a circle with diameter = button height */
+.top-actions {
+  --control-h: 46px;
+}
+
+.top-actions .btn {
+  height: var(--control-h);
+}
+
+.lang-btn {
+  width: var(--control-h);
+  height: var(--control-h);
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: var(--line);
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 3px 3px 0 var(--ink);
+  font: 700 15px "Fredoka", "Mitr", sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.lang-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--yolk-light);
+}
+
+.lang-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.top h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1;
+  color: var(--yolk);
+  -webkit-text-stroke: 6px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 4px 4px 0 var(--ink);
+}
+
+.top p {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+/* ---------- buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 3px 3px 0 var(--ink);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.btn.primary {
+  background: var(--yolk);
+}
+
+.btn.ghost {
+  background: transparent;
+  box-shadow: none;
+}
+
+.btn.small {
+  padding: 4px 12px;
+  font-size: 14px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--bacon);
+  outline-offset: 2px;
+}
+
+/* Grouped adjacent buttons / inputs: focus ring sits inside so it doesn't overlap neighbors or get clipped */
+.seg button:focus-visible,
+.presets button:focus-visible,
+.toolbar button:focus-visible,
+.swatches button:focus-visible,
+.split-item:focus-visible,
+.zoom button:focus-visible {
+  outline-offset: -4px;
+}
+
+select:focus-visible,
+input[type="text"]:focus-visible,
+.lospec input:focus-visible {
+  outline: none;
+  border-color: var(--bacon);
+}
+
+/* ---------- empty state */
+.empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.drop {
+  max-width: 720px;
+  width: 100%;
+  padding: 48px 24px;
+  border: 4px dashed var(--ink);
+  border-radius: 28px;
+  background: var(--white);
+  text-align: center;
+}
+
+.drop .big {
+  font: 700 26px "Fredoka", "Mitr", sans-serif;
+  margin: 0 0 8px;
+}
+
+.samples {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* ---------- layout */
+.layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr 1fr;
+  gap: 16px;
+  min-height: 0;
+}
+
+.panel {
+  background: var(--white);
+  border: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: start;
+}
+
+.controls h2 {
+  font-size: 18px;
+  color: var(--bacon);
+  margin-top: 6px;
+}
+
+.seg {
+  display: flex;
+  border: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.seg button {
+  flex: 1;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.seg button.on {
+  background: var(--yolk);
+  font-weight: 600;
+}
+
+select,
+.lospec input {
+  width: 100%;
+  padding: 6px 10px;
+  border: var(--line);
+  border-radius: 10px;
+  background: var(--white);
+}
+
+.lospec {
+  display: flex;
+  gap: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+input[type="range"] {
+  accent-color: var(--bacon);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.check input {
+  accent-color: var(--bacon);
+  width: 18px;
+  height: 18px;
+}
+
+.check.inline {
+  font-size: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 2px dashed rgba(42, 15, 8, 0.25);
+  font-size: 14px;
+}
+
+.stats dt {
+  color: var(--muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* ---------- views */
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 520px;
+}
+
+.view-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.view-head h2 {
+  font-size: 22px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.verdict {
+  padding: 8px 14px;
+  border: var(--line);
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.verdict b {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--white);
+  font-size: 14px;
+}
+
+.verdict.ok {
+  background: #d8f5e6;
+}
+
+.verdict.warn {
+  background: #ffefc7;
+}
+
+.verdict.bad {
+  background: #ffd9de;
+}
+
+/* Workspace: larger than the image, zoomable/pannable — frame + checkerboard (transparency) only inside the image (drawn in PixelCanvas) */
+.canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 460px;
+  border: 2px solid rgba(42, 15, 8, 0.15);
+  border-radius: 12px;
+  background: radial-gradient(rgba(42, 15, 8, 0.12) 1.2px, transparent 1.4px) 0 0 / 18px 18px, #e9e2cf;
+  overflow: hidden;
+}
+
+.canvas-wrap canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+canvas.pannable {
+  touch-action: none;
+}
+
+.frame-label {
+  position: absolute;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--white);
+  font: 500 12px "JetBrains Mono", monospace;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.zoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  border: var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.zoom button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.zoom button:hover {
+  background: var(--yolk-light);
+}
+
+.zoom-level {
+  min-width: 48px;
+  text-align: center;
+  font: 500 13px "JetBrains Mono", monospace;
+}
+
+.zoom [data-tip]::after {
+  left: auto;
+  right: 0;
+  transform: translate(0, 4px);
+}
+.zoom [data-tip]:hover::after,
+.zoom [data-tip]:has(:focus-visible)::after,
+.zoom [data-tip]:focus-visible::after {
+  transform: translate(0, 0);
+}
+
+canvas.drawable {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.toolbar button {
+  width: 38px;
+  height: 38px;
+  border: var(--line);
+  border-radius: 10px;
+  background: var(--white);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.toolbar button.on {
+  background: var(--yolk);
+  box-shadow: inset 0 -3px 0 rgba(42, 15, 8, 0.25);
+}
+
+.toolbar .current {
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  border: var(--line);
+  border-radius: 10px;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.swatches button {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Selected color: inner white ring + thicker border (no outline, which would overlap neighboring swatches) */
+.swatches button.on {
+  border-width: 3px;
+  box-shadow: inset 0 0 0 2px var(--white);
+}
+
+.swatches input[type="color"] {
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.export {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border: var(--line);
+  border-radius: 12px;
+  background: #ffd9de;
+  box-shadow: var(--shadow);
+  z-index: 20;
+}
+
+.toast button {
+  border: 0;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+footer a,
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+footer a:hover,
+.link-btn:hover {
+  color: var(--ink);
+}
+
+/* ---------- about dialog */
+dialog.about {
+  position: fixed;
+  width: min(480px, calc(100vw - 32px));
+  padding: 24px;
+  border: var(--line);
+  border-radius: 20px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+dialog.about::backdrop {
+  background: rgba(42, 15, 8, 0.45);
+}
+
+.about-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+.about-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.about-head h2 {
+  font-size: 24px;
+}
+
+.about-head .brand {
+  color: var(--bacon);
+}
+
+.about-head p {
+  margin: 2px 0 0;
+}
+
+dialog.about h3 {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  color: var(--bacon);
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.about-links a:hover {
+  background: var(--yolk-light);
+}
+
+.about-privacy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- responsive */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+  }
+  .controls {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .top {
+    flex-wrap: wrap;
+  }
+  .top-actions {
+    margin-left: 0;
+  }
+  .top .logo {
+    width: 64px;
+    height: 64px;
+  }
+  .view {
+    min-height: 420px;
+  }
+}
+
+/* ---------- tooltip: add data-tip to any element (shown on hover and on keyboard focus) */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  content: attr(data-tip) / ""; /* keep tooltip text out of the accessible name read by screen readers */
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translate(-50%, 4px);
+  width: max-content;
+  max-width: 260px;
+  padding: 6px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--white);
+  font: 400 13px/1.35 "Mitr", system-ui, sans-serif;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* Hide with display:none (not opacity) so hidden tooltips don't cause horizontal scroll on mobile */
+[data-tip]:hover::after,
+[data-tip]:has(:focus-visible)::after,
+[data-tip]:focus-visible::after {
+  display: block;
+  transform: translate(-50%, 0);
+}
+
+/* Keep tooltips of far-left/right elements from overflowing the screen */
+.controls [data-tip]::after {
+  left: 0;
+  transform: translate(0, 4px);
+}
+.controls [data-tip]:hover::after,
+.controls [data-tip]:has(:focus-visible)::after {
+  transform: translate(0, 0);
+}
+.top-actions [data-tip]::after,
+.toolbar .current::after {
+  left: auto;
+  right: 0;
+  bottom: auto;
+  top: calc(100% + 8px);
+  transform: translate(0, -4px);
+}
+.top-actions [data-tip]:hover::after,
+.top-actions [data-tip]:has(:focus-visible)::after,
+.toolbar .current:hover::after {
+  transform: translate(0, 0);
+}
+
+/* Touch screens: :hover sticks after a tap → hide tooltips in all states (must beat the :hover rule above) */
+@media (hover: none) {
+  [data-tip]::after,
+  [data-tip]:hover::after,
+  [data-tip]:has(:focus-visible)::after,
+  [data-tip]:focus-visible::after {
+    display: none !important;
+  }
+}
+
+/* ---------- editor extras */
+.tool-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  min-height: 34px;
+}
+
+.seg.brush {
+  align-items: center;
+  font-size: 14px;
+}
+
+.seg.brush span {
+  padding: 0 10px;
+  color: var(--muted);
+}
+
+.seg.brush button {
+  flex: none;
+  width: 34px;
+  padding: 4px 0;
+}
+
+.field.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 2px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--white);
+}
+
+.custom-color input[type="color"] {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.swatches.recent {
+  align-items: center;
+}
+
+.swatches.recent .muted {
+  margin-right: 4px;
+}
+
+.ai-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 2px dashed rgba(42, 15, 8, 0.25);
+}
+
+/* ---------- prompt dialog */
+dialog.prompts {
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  padding: 24px;
+  border: var(--line);
+  border-radius: 20px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+dialog.confirm {
+  width: min(420px, calc(100vw - 32px));
+  padding: 24px;
+  border: var(--line);
+  border-radius: 20px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+
+dialog.confirm h2 {
+  font-size: 22px;
+}
+
+dialog.confirm::backdrop,
+dialog.prompts::backdrop {
+  background: rgba(42, 15, 8, 0.45);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn.danger {
+  background: var(--bacon);
+  color: var(--white);
+}
+
+dialog.prompts::backdrop {
+  background: rgba(42, 15, 8, 0.45);
+}
+
+.prompts-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.prompts-head h2 {
+  font-size: 24px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: var(--line);
+  border-radius: 50%;
+  background: var(--white);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+dialog.prompts ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: grid;
+  gap: 12px;
+}
+
+dialog.prompts li {
+  padding: 12px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--toast);
+}
+
+.prompt-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+dialog.prompts code {
+  display: block;
+  font: 500 13px/1.5 "JetBrains Mono", monospace;
+  user-select: all;
+}
+
+/* ---------- icons */
+.btn svg,
+.toolbar svg {
+  flex: none;
+}
+
+.toolbar button {
+  display: grid;
+  place-items: center;
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.verdict b {
+  flex: none;
+}
+
+.drop-icon {
+  margin-bottom: 8px;
+  color: var(--bacon);
+}
+
+.toast button {
+  display: grid;
+  place-items: center;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- export */
+.export {
+  align-items: center;
+}
+
+.scale {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.scale select {
+  width: auto;
+  padding: 6px 8px;
+}
+
+/* ---------- split strip */
+.split {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.split-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.split-head .btn {
+  margin-left: auto;
+}
+
+.split-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 6px;
+}
+
+.split-item {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 76px;
+  height: 84px;
+  border: var(--line);
+  border-radius: 12px;
+  background: var(--toast);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.split-item.on {
+  background: var(--yolk);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.split-item canvas {
+  image-rendering: auto;
+}
+
+/* Tooltips in horizontal scrollers get clipped → show them below instead */
+.split-strip [data-tip]::after {
+  display: none !important;
+}
+
+/* ---------- prompt examples */
+dialog.prompts li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+dialog.prompts img.example {
+  flex: none;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--white);
+}
+
+.prompt-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+@media (max-width: 560px) {
+  dialog.prompts li {
+    flex-direction: column;
+  }
+  dialog.prompts img.example {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+/* ---------- quick size presets */
+.presets {
+  display: flex;
+  gap: 6px;
+}
+
+.presets button {
+  flex: 1;
+  padding: 4px 0;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  font: 500 13px "JetBrains Mono", monospace;
+  cursor: pointer;
+}
+
+.presets button.on {
+  background: var(--yolk);
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Sprite to Life */
+.life {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.life-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.life-head h2 {
+  font-size: 30px;
+  color: var(--yolk);
+  -webkit-text-stroke: 5px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 3px 3px 0 var(--ink);
+}
+
+.life-head p {
+  margin: 4px 0 0;
+}
+
+.life-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.life-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: var(--line);
+  border-radius: 14px;
+  background: var(--white);
+  font: 600 16px "Mitr", sans-serif;
+  cursor: pointer;
+}
+
+.life-tabs button.on {
+  background: var(--yolk);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.life-animate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  align-items: start;
+}
+
+.life-stage {
+  min-height: 340px;
+  display: grid;
+  place-items: center;
+  border: var(--line);
+  border-radius: 14px;
+  background: repeating-conic-gradient(#e8e4da 0 25%, #f6f3ea 0 50%) 0 0 / 16px 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.life-stage canvas {
+  image-rendering: pixelated;
+  max-width: 100%;
+}
+
+.life-stage.voxel {
+  height: 420px;
+  background: radial-gradient(circle at 50% 40%, #fffdf5, #efeadb);
+  cursor: grab;
+}
+
+.life-stage.voxel canvas {
+  image-rendering: auto;
+}
+
+.life-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.life-side .seg button {
+  font-size: 14px;
+}
+
+.life-play {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.life-stage.play {
+  min-height: 0;
+  background: #9fdcff;
+}
+
+.life-stage.play canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  outline: none;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 700 18px "Fredoka", "Mitr", sans-serif;
+}
+
+.hud span {
+  padding: 4px 14px;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.win {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255, 253, 245, 0.85);
+  font: 700 28px "Fredoka", "Mitr", sans-serif;
+  color: var(--ink);
+}
+
+.touch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.touch button {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: var(--line);
+  border-radius: 18px;
+  background: var(--white);
+  box-shadow: 3px 3px 0 var(--ink);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.touch .jump {
+  margin-left: auto;
+  background: var(--yolk);
+}
+
+.touch .muted {
+  flex: 1;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .life-animate {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .touch .muted {
+    display: none;
+  }
+  .touch .jump {
+    margin-left: auto;
+  }
+}
+
+/* ---------- frame tool */
+.frame-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.seg.ratio {
+  font-size: 13px;
+}
+
+.seg.ratio button {
+  padding: 4px 6px;
+  font-family: "JetBrains Mono", "Mitr", monospace;
+}
+
+.frame-size,
+.frame-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.frame-size label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 500 13px "JetBrains Mono", monospace;
+}
+
+.frame-size input {
+  width: 64px;
+  padding: 4px 6px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  font: 500 13px "JetBrains Mono", monospace;
+}
+
+.frame-size input:focus-visible {
+  outline: none;
+  border-color: var(--bacon);
+}
+
+/* ---------- draw mode */
+.layout.draw {
+  grid-template-columns: 1fr;
+}
+
+.layout.draw .canvas-wrap {
+  min-height: min(68vh, 720px);
+}
+
+.blank-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px dashed rgba(42, 15, 8, 0.25);
+}
+
+.blank-cta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blank-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.blank-sizes .btn {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.blank-custom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 14px "JetBrains Mono", monospace;
+}
+
+.blank-custom input {
+  width: 64px;
+  padding: 4px 6px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  font: inherit;
+}
+
+.blank-custom input:focus-visible {
+  outline: none;
+  border-color: var(--bacon);
+}

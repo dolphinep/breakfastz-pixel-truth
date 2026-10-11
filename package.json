@@ -1,0 +1,47 @@
+{
+  "name": "pixel-truth",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Turn fake AI pixel art into real, grid-aligned pixel art — and bring it to life. Runs in the browser.",
+  "license": "MIT",
+  "author": "dolphinep (breakfastz)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dolphinep/breakfastz-pixel-truth.git"
+  },
+  "homepage": "https://github.com/dolphinep/breakfastz-pixel-truth",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "test": "vitest run src",
+    "samples": "vitest run scripts/samples.test.ts --silent=false",
+    "e2e": "playwright test",
+    "examples": "vitest run scripts/examples.test.ts --silent=false",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "lucide-react": "^1.55.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^24.13.3",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jpeg-js": "^0.4.4",
+    "oxlint": "^1.81.0",
+    "pngjs": "^7.0.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.3"
+  }
+}
