@@ -114,7 +114,7 @@ const en = {
   drawPaletteTip: "Palette for the color swatches",
   about: "About",
   aboutBy: "by",
-  aboutBody: "breakfastz turns AI into real, usable products — one project every week. Pixel Truth is the first one: everything you see is built in public, from idea to release.",
+  aboutBody: "breakfastz — fresh tech, served for breakfast: AI and dev news, quick explainers, tool taste-tests, and real products built with AI. Pixel Truth is the first Main Dish: built in public, from idea to release.",
   aboutFollow: "Follow the channel",
   aboutCode: "Source code",
   aboutRepo: "breakfastz-pixel-truth",
@@ -177,7 +177,7 @@ const en = {
   errProcess: "Processing failed",
   errCopy: "Copy isn’t supported in this browser",
   errLospec: "Palette “{slug}” not found on Lospec",
-  footer: "weekly project · EP.001",
+  footer: "fresh tech, served for breakfast · EP.001",
   // prompt dialog
   promptsTitle: "Generate pixel art with AI — then check it here",
   promptsIntro:
@@ -296,7 +296,7 @@ const th: Dict = {
   drawPaletteTip: "ชุดสีของแถบสีด้านล่าง",
   about: "เกี่ยวกับ",
   aboutBy: "by",
-  aboutBody: "breakfastz เปลี่ยน AI ให้เป็น product ที่ใช้ได้จริง สัปดาห์ละหนึ่งโปรเจค Pixel Truth คือตัวแรก — ทุกอย่างทำแบบเปิดเผย ตั้งแต่ไอเดียจนถึงวันปล่อย",
+  aboutBody: "breakfastz — ความรู้มื้อเช้าพร้อมเสิร์ฟ: ข่าว AI / dev, อธิบายแนวคิดสั้นๆ, ลองเครื่องมือ และสร้างของที่ใช้ได้จริงด้วย AI — Pixel Truth คือ Main Dish จานแรก ทำแบบเปิดเผยตั้งแต่ไอเดียจนถึงวันปล่อย",
   aboutFollow: "ติดตามช่อง",
   aboutCode: "ซอร์สโค้ด",
   aboutRepo: "breakfastz-pixel-truth",
@@ -358,7 +358,7 @@ const th: Dict = {
   errProcess: "ประมวลผลไม่สำเร็จ",
   errCopy: "เบราว์เซอร์นี้คัดลอกภาพไม่ได้",
   errLospec: "ไม่พบ palette “{slug}” บน Lospec",
-  footer: "weekly project · EP.001",
+  footer: "ความรู้มื้อเช้าพร้อมเสิร์ฟ · EP.001",
   promptsTitle: "ให้ AI สร้าง pixel art — แล้วเอามาตรวจที่นี่",
   promptsIntro:
     "คัดลอก prompt ไปใส่ ChatGPT, Gemini, Midjourney หรือ AI สร้างภาพตัวไหนก็ได้ ภาพจาก AI ดูเหมือน pixel art แต่แทบไม่เคยตรงกริดจริง — เอาผลมาวางที่นี่เพื่อดูว่าปลอมแค่ไหน แล้วแปลงเป็น pixel art ของจริง",
